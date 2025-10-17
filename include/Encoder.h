@@ -132,27 +132,3 @@ void enc_r_tick(){
 float enc_r_get_phi(){
     return enc_r_phi;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-void enc_r_tick(){
-    noInterrupts();
-    int counter = enc_r_counter;
-    enc_r_counter = 0;
-    interrupts();
-
-    enc_r_phi += ENC_TICK_TO_RAD * counter;
-}
-
-float enc_r_get_phi(){
-    return enc_r_phi;
-}
