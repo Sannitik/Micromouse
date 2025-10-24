@@ -4,3 +4,6 @@
 #define Ts_s (Ts_us / 1000000.0)
 
 #define VE_LPT_T 0.005
+
+#define SERVO_KP 3.0
+#define SERVO_KI 20.0
