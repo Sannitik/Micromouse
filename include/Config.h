@@ -7,3 +7,6 @@
 
 #define SERVO_KP 3.0
 #define SERVO_KI 20.0
+
+#define ROBOT_WIDTH 0.075
+#define ROBOT_WHEEL_RADIUS 0.0165
