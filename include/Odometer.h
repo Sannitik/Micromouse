@@ -19,8 +19,17 @@ void odom_ticks(){
     float v_r = w_r * ROBOT_WHEEL_RADIUS;
     
     float v = (v_l + v_r)/2;
-    float theta_i0 = (v_l - v_r) / ROBOT_WIDTH;
+    float theta_i0 = (v_r - v_l) / ROBOT_WIDTH;
 
     odom_S += v * Ts_s;
     odom_theta += theta_i0 * Ts_s;
+}
+
+float odom_get_S()
+{
+    return odom_S;
+}
+float odom_get_theta()
+{
+    return odom_theta;
 }

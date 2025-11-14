@@ -10,3 +10,8 @@
 
 #define ROBOT_WIDTH 0.075
 #define ROBOT_WHEEL_RADIUS 0.0165
+
+#define MAX_VEL 0.2
+#define MAX_ANG_VEL 1.0
+
+#define CELL_WIDTH 0.18
