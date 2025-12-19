@@ -10,71 +10,8 @@
 #include "Screens.h"
 #include "Mixer.h"
 #include "Odometer.h"
+#include "ASMR.h"
 
-void stop(){
-  odom_reset();
-  while (true)
-  {
-  static uint32_t timer = micros();
-    while(micros() - timer < Ts_us)
-    ;
-    timer = micros();
-
-    odom_ticks();
-
-    float v_0 = 0;
-    float theta_i0 = 0;
-
-    mixer_tick(v_0, theta_i0);
-  }
-}
-
-void left(){
-  odom_reset();
-  while (true)
-  {
-    static uint32_t timer = micros();
-    while(micros() - timer < Ts_us)
-    ;
-    timer = micros();
-
-    odom_ticks();
-
-    float v_0 = 0;
-    float theta_i0 = MAX_ANG_VEL;
-
-    if(odom_get_theta() > M_PI / 2)
-    {
-      return;
-    }
-
-    mixer_tick(v_0, theta_i0);
-  }
-    
-}
-
-void fwd(){
-  odom_reset();
-  while (true)
-  {
-    static uint32_t timer = micros();
-    while(micros() - timer < Ts_us)
-    ;
-    timer = micros();
-
-    odom_ticks();
-
-    float v_0 = MAX_VEL;
-    float theta_i0 = 0;
-
-    if(odom_get_S() > CELL_WIDTH){
-      return;
-    }
-
-    mixer_tick(v_0, theta_i0);
-  }
-    
-}
 
 void setup() {
   Serial.begin(115200);
@@ -83,24 +20,18 @@ void setup() {
   vs_init();
   enc_l_init();
   enc_r_init();
+  asmr_init();
 
   interrupts();
 
   argviz_init(Serial);
   argviz_registerScreen(0, volts);
-  argviz_registerScreen(1, servos);
-  argviz_registerScreen(2, mixer);
-  // argviz_start();
+  argviz_registerScreen(1, encoders);
+  argviz_registerScreen(2, servos);
+  argviz_registerScreen(3, mixer);
+  argviz_registerScreen(4, asmr);
+  argviz_start();
 
-  fwd();
-  left();
-  fwd();
-  left();
-  fwd();
-  left();
-  fwd();
-  left();
-  stop();
 }
 
 void loop() {
@@ -109,9 +40,8 @@ void loop() {
     ;
     timer = micros();
 
-    odom_ticks();
+    // odom_ticks();
 
-    mixer_tick(v_0, theta_i0);
-    
+    asmr_tick();
     
 }

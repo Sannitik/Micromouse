@@ -9,6 +9,7 @@
 #include "Screens.h"
 #include "Mixer.h"
 #include "Odometer.h"
+#include "ASMR.h"
 
 
 int left_u = 0;
@@ -56,7 +57,14 @@ SCREEN(servos,
     "right_w0 = %s", String(right_w0).c_str());
     ROW("left_w: %s", String(ve_l_get_w_est_f()).c_str())
 })
-    
+
+SCREEN(encoders,
+    {
+        ROW("Left phi[mrad]: %d", (int)(enc_l_get_phi() * 1000));
+        ROW("Left wf[mrad/s]: %d", (int)(ve_l_get_w_est_f() * 1000));
+        ROW("Right phi[mrad]: %d", (int)(enc_r_get_phi() * 1000));
+        ROW("Right wf[mrad/s]: %d", (int)(ve_r_get_w_est_f() * 1000));
+    })
 SCREEN(volts, 
   {
     ROW("Vbatt [mV]: %d", int(vs_get_v_batt() * 1000));
@@ -138,3 +146,15 @@ SCREEN(mixer,
     ROW("odom_S: %s", String(odom_S).c_str());
     ROW("odom_theta: %s", String(odom_theta).c_str());
 })
+
+SCREEN(asmr,
+    {
+        size_t prog_counter = asmr_get_prog_counter();
+        ROW("prog_counter: %d", prog_counter);
+        ASMR_Entry *prog_buffer = asmr_get_prog_buffer();
+        for (size_t i = 0; i < 5; i++)
+        {
+            ROW("prog_buffer[%d]: %X", prog_counter + i, prog_buffer[prog_counter + i].raw);
+        }
+        //ROW("prog_buffer[0]: %d", asmr_get_prog_buffer()[0]);
+    })

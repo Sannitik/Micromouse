@@ -14,4 +14,8 @@
 #define MAX_VEL 0.2
 #define MAX_ANG_VEL 1.0
 
+#define TURN_RADIUS_SHORTEST 0.05
+
 #define CELL_WIDTH 0.18
+
+#define ASMR_PROG_BUFFER 64
