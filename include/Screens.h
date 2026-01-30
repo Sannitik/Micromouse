@@ -10,12 +10,21 @@
 #include "Mixer.h"
 #include "Odometer.h"
 #include "ASMR.h"
+#include "WallSens"
 
 
 int left_u = 0;
 int right_u = 0;
 int left_w0 = 0;
 int right_w0 = 0;
+
+SCREEN(walls,
+       {
+           ROW("Front Left: %d", gSensorFrontleft);
+           ROW("Front Right: %d", gSensorFrontright);
+           ROW("Left: %d", gSensorLeft);
+           ROW("Right: %d", gSensorRight);
+       })
 
 SCREEN(servos, 
   {
