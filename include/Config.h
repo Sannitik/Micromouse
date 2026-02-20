@@ -19,4 +19,21 @@
 
 #define CELL_WIDTH 0.18
 
+//Asmr parameters
 #define ASMR_PROG_BUFFER 64
+
+//Wall following
+// right small distance - 56
+// left small distance - 48
+// right long distance - 20
+// left long distance - 14
+
+#define MF_LEFT_REFERENCE 110 //48 75
+#define MF_RIGHT_REFERENCE 150 //56 115
+
+#define MF_LEFT_TRESHOLD 36 //14 25
+#define MF_RIGHT_TRESHOLD 30 //20 50
+
+
+#define MAZE_WIDTH 6
+#define MAZE_HEIGHT 4

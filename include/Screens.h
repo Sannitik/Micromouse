@@ -10,7 +10,8 @@
 #include "Mixer.h"
 #include "Odometer.h"
 #include "ASMR.h"
-#include "WallSens"
+#include "DistSens.h"
+#include "WallFollowing.h"
 
 
 int left_u = 0;
@@ -18,12 +19,41 @@ int right_u = 0;
 int left_w0 = 0;
 int right_w0 = 0;
 
-SCREEN(walls,
+
+SCREEN(wf,
+    {
+        CLICK_ROW([](CLICK_STATE state){
+            switch(state)
+            {
+            case CLICK_LEFT:
+                wf_kp_left /= 1.1;
+                break;
+            case CLICK_RIGHT:
+                wf_kp_left *= 1.1;
+                break;
+            case CLICK_DOWN:
+                wf_kp_left = 1;
+                break;
+            default:
+                break;
+        } },
+        "wf_kp: %s", String(wf_kp_left).c_str());
+    })
+
+SCREEN(dist_sens,
        {
-           ROW("Front Left: %d", gSensorFrontleft);
-           ROW("Front Right: %d", gSensorFrontright);
-           ROW("Left: %d", gSensorLeft);
-           ROW("Right: %d", gSensorRight);
+        //    ROW("dist left: %d", dist_get_left());
+        //    ROW("dist right: %d", dist_get_right());
+        //    ROW("dist fleft: %d", dist_get_fleft());
+        //    ROW("dist fright: %d", dist_get_fright());
+        Serial.print(F("  Right: "));
+        Serial.print(gSensorRight);
+        Serial.print(F("  Left: "));
+        Serial.print(gSensorLeft);
+        Serial.print(F("  FrontLeft: "));
+        Serial.print(gFSensorLeft);
+        Serial.print(F("  FrontRight: "));
+        Serial.println(gFSensorRight);
        })
 
 SCREEN(servos, 
