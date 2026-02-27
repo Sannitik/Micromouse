@@ -15,6 +15,7 @@
 #include "WallFollowing.h"
 #include "Maze.h"
 #include "MazeDrawer.h"
+#include "Tests.h"
 
 void setup()
 {
@@ -39,34 +40,7 @@ void setup()
     argviz_registerScreen(4, dist_sens);
     // argviz_start();
 
-    maze_set_wall(Vec2{1, 2}, Maze::CellWalls{Maze::WALL, Maze::WALL, Maze::WALL, Maze::OPEN});
-    maze_set_wall(Vec2{3, 0}, Maze::CellWalls{Maze::OPEN, Maze::WALL, Maze::OPEN, Maze::OPEN});
-    maze_set_wall(Vec2{4, 1}, Maze::CellWalls{Maze::WALL, Maze::WALL, Maze::WALL, Maze::OPEN});
-    maze_set_wall(Vec2{0, 1}, Maze::CellWalls{Maze::WALL, Maze::WALL, Maze::WALL, Maze::OPEN});
-    maze_set_wall(Vec2{2, 2}, Maze::CellWalls{Maze::OPEN, Maze::OPEN, Maze::OPEN, Maze::WALL});
-    maze_set_wall(Vec2{2, 0}, Maze::CellWalls{Maze::OPEN, Maze::WALL, Maze::WALL, Maze::OPEN});
-    maze_set_wall(Vec2{3, 2}, Maze::CellWalls{Maze::WALL, Maze::WALL, Maze::OPEN, Maze::OPEN});
-    maze_set_wall(Vec2{4, 3}, Maze::CellWalls{Maze::WALL, Maze::WALL, Maze::WALL, Maze::OPEN});
-    maze_set_wall(Vec2{5, 1}, Maze::CellWalls{Maze::OPEN, Maze::WALL, Maze::OPEN, Maze::WALL});
-    maze_set_wall(Vec2{5, 0}, Maze::CellWalls{Maze::OPEN, Maze::OPEN, Maze::WALL, Maze::WALL});
-    maze_set_wall(Vec2{1, 0}, Maze::CellWalls{Maze::OPEN, Maze::OPEN, Maze::WALL, Maze::OPEN});
-    maze_set_wall(Vec2{2, 1}, Maze::CellWalls{Maze::OPEN, Maze::OPEN, Maze::WALL, Maze::OPEN});
-    maze_set_wall(Vec2{0, 3}, Maze::CellWalls{Maze::WALL, Maze::WALL, Maze::OPEN, Maze::OPEN});
-    maze_set_wall(Vec2{2, 3}, Maze::CellWalls{Maze::OPEN, Maze::WALL, Maze::OPEN, Maze::OPEN});
-    maze_set_wall(Vec2{5, 2}, Maze::CellWalls{Maze::OPEN, Maze::OPEN, Maze::WALL, Maze::WALL});
-    
-
-
-    //maze_set_wall(Vec2{0, 1}, Maze::CellWalls{Maze::WALL, Maze::WALL, Maze::WALL, Maze::OPEN});
-    
-    Serial.println();
-    draw_maze(MAZE_WIDTH, MAZE_HEIGHT);
-
-    solver_solve(Vec2{0, 0}, Vec2{4, 3});
-
-    draw_maze_with_solver(MAZE_WIDTH, MAZE_HEIGHT);
-
-    while(1);
+    test_navigator();
 }
 
 void loop()

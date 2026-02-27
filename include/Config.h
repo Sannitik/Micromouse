@@ -28,12 +28,21 @@
 // right long distance - 20
 // left long distance - 14
 
+//DistSens
 #define MF_LEFT_REFERENCE 110 //48 75
 #define MF_RIGHT_REFERENCE 150 //56 115
 
 #define MF_LEFT_TRESHOLD 36 //14 25
 #define MF_RIGHT_TRESHOLD 30 //20 50
 
-
+//Maze
 #define MAZE_WIDTH 6
 #define MAZE_HEIGHT 4
+
+//Solve
+#define MAX_SOLVE_TIME 500
+
+//Navigator
+#define NAV_X_START 1
+#define NAV_Y_START 1
+#define NAV_SIGMA_START 0 //Стартуем вправо
