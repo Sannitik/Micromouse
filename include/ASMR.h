@@ -2,77 +2,17 @@
 
 #include <stdint.h>
 #include <Arduino.h>
-#include <Config.h>
-#include <Odometer.h>
-#include <Mixer.h>
+#include "Config.h"
+#include "Odometer.h"
+#include "Mixer.h"
 #include "DistSens.h"
-//#include "WallFollowing.h"
+#include "Navigator.h"
+#include "WallFollowing.h"
+#include "Tipes.h"
+#include "WallExploler.h"
+#include "MazeDrawer.h"
+#include "Router.h"
 
-struct ASMR_Entry
-{
-    union
-    {
-        uint8_t raw;
-
-        uint8_t cyc_type : 2;
-
-        struct
-        {
-            uint8_t cyc_type : 2;
-            uint8_t stidle_mode : 6;
-        } stidle;
-        
-        struct
-        {
-            uint8_t cyc_type : 2;
-            uint8_t forw_mode : 1;
-            uint8_t forw_dist : 5;
-        } forw;
-
-        struct
-        {
-            uint8_t cyc_type : 2;
-            uint8_t turn_mode : 2;
-            uint8_t turn_source : 1;
-            uint8_t turn_angle : 2;
-            uint8_t turn_dir : 1;
-        } turn;
-    };
-};
-
-struct SensorData 
-{
-    float odom_S;
-    float odom_theta;
-    float time;
-    int dist_left;
-    int dist_right;
-    int dist_fleft;
-    int dist_fright;
-    bool is_wall_left;
-    bool is_wall_right;
-    bool is_wall_fleft;
-    bool is_wall_fright;
-};
-
-struct CyclogramOutput
-{
-    float theta_i0;
-    float v_0;
-    bool is_completed;
-};
-
-enum ASMR_CYC : uint8_t
-{
-    STOP = 0b00000000,
-    IDLE = 0b00000001,
-
-    SWD05 = 0b01000001,
-    SWD1 = 0b01000010,
-    SS90SEL = 0b10010010,
-    SS90SER = 0b10010011,
-    TURN_CYC = 0b10000000,
-};
 
 #define FROM_STRAIGHT 0
 #define FROM_DIAG 0b00001000
@@ -90,19 +30,11 @@ enum ASMR_CYC : uint8_t
 #define TURN_RIGHT 0b00000001
 
 ASMR_Entry asmr_prog_buffer[ASMR_PROG_BUFFER] = {
-   SWD05,
-   TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_LEFT,
-   TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_LEFT,
-   TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_RIGHT,
-   TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_RIGHT,
-   SWD1,
-   TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_RIGHT,
-   SWD1,
-   TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_LEFT,
-   SWD1,
-   SWD05,
-   STOP
-
+    SWD05,
+    SWD1,
+    //TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_RIGHT,
+    IDLE,
+    STOP
 };
 
 enum ASMR_CYC_Type : uint8_t
@@ -124,7 +56,7 @@ void asmr_cyc_stidle(CyclogramOutput *output, SensorData data, ASMR_Entry cyc)
     output->v_0 = 0;
     output->theta_i0 = 0;
 
-    if(cyc.stidle.stidle_mode == 0)
+    if(cyc.raw == STOP)
     {
         output->is_completed = false;
     }
@@ -134,15 +66,13 @@ void asmr_cyc_stidle(CyclogramOutput *output, SensorData data, ASMR_Entry cyc)
     }
 }
 
-float wf_straight_tick(SensorData data);
-
 void asmr_cyc_forw(CyclogramOutput *output, SensorData data, ASMR_Entry cyc)
 {
     output->v_0 = MAX_VEL;
     output->theta_i0 = wf_straight_tick(data);
 
     // int dist_half_int = cyc.forw.forw_dist;
-    int dist_half_int = cyc.raw & 0b00011111;
+    int16_t dist_half_int = cyc.raw & 0b00011111;
 
     float dist_mul = 1.0;
 
@@ -283,7 +213,7 @@ asmr_nav_update(ASMR_Entry cyc)
             switch((cyc.raw & 0b00110000) >> 4)
             {
             case 0b00: //Shortest
-                switch(delta_angle):
+                switch(delta_angle)
                 {
                     case 0: // 45deg
                         dx = 2;
@@ -343,7 +273,7 @@ void asmr_tick()
     SensorData data = {
         .odom_S = odom_get_S(),
         .odom_theta = odom_get_theta(),
-        .time = micros(), ///!!!
+        .time = micros(), //!!!
         .dist_left = dist_get_left(),
         .dist_right = dist_get_right(),
         .dist_fleft = dist_get_fleft(),
@@ -352,8 +282,8 @@ void asmr_tick()
 
     data.is_wall_left  = data.dist_left > MF_LEFT_TRESHOLD;
     data.is_wall_right = data.dist_right > MF_RIGHT_TRESHOLD;
-    data.is_wall_fleft  = false;
-    data.is_wall_fright  = false;
+    data.is_wall_fleft  = data.dist_fleft > MF_FLEFT_TRESHOLD;
+    data.is_wall_fright  = data.dist_fright > MF_FRIGHT_TRESHOLD;
 
     CyclogramOutput output;
 
@@ -380,7 +310,28 @@ void asmr_tick()
     {
         asmr_prog_counter++;
         odom_reset();
-        asmr_nav_update();
+        asmr_nav_update(current_cyc);
+        wall_explorer_update(data);
+        //router_init();
+        solver_init();
+        solver_set_start_goal(nav_get_pos(), Vec2{GOAL_X, GOAL_Y});
+    }
+    bool is_solved = solver_solve();
+
+    if(is_solved)
+    {
+        router_init();
+        router_tick();
+        router_path_to_cyc(router_path_buffer);
+
+        asmr_prog_buffer[0] = router_cyc_buffer[0];
+        asmr_prog_counter = 0;
+
+        solver_init();
+    }
+    if (current_cyc.raw == IDLE)
+    {
+        draw_maze(MAZE_WIDTH, MAZE_HEIGHT);
     }
     //Write motors
     mixer_tick(output.v_0, output.theta_i0);

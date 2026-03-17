@@ -121,15 +121,15 @@ void updateSideWallSensor()
 void updateFrontWallSensors()
 {
   // first read them dark
-  int f_right = analogRead(A1);
-  int f_left = analogRead(A2);
+  int f_right = analogRead(A0);
+  int f_left = analogRead(A3);
   // light them up
   digitalWrite(EMITTER_F, 1);
   // wait until all the detectors are stable
   delayMicroseconds(50);
   // now find the differences
-  f_right = analogRead(A1) - f_right;
-  f_left = analogRead(A2) - f_left;
+  f_right = analogRead(A0) - f_right;
+  f_left = analogRead(A3) - f_left;
   // and go dark again.
   digitalWrite(EMITTER_F, 0);
 

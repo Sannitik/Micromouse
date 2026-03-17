@@ -41,10 +41,10 @@ public:
     };
     struct CellWalls
     {
-        WallState left : 2;
-        WallState down : 2;
-        WallState up : 2;
-        WallState right : 2;
+        WallState west : 2;
+        WallState south : 2;
+        WallState north : 2;
+        WallState east : 2;
     };
 private:
 
@@ -77,13 +77,13 @@ public:
         }
         for(int x = 0; x < MAZE_WIDTH; x++)
         {
-            CellWalls cell = {.left = UNKNOWN, .down = WALL, .up = UNKNOWN, .right = UNKNOWN};
+            CellWalls cell = {.west = UNKNOWN, .south = WALL, .north = UNKNOWN, .east = UNKNOWN};
             Vec2 coord = {x, MAZE_HEIGHT - 1};
             setWall(coord, cell);
         }
         for(int y = 0; y < MAZE_HEIGHT; y++)
         {
-            CellWalls cell = {.left = UNKNOWN, .down = UNKNOWN, .up = UNKNOWN, .right = WALL};
+            CellWalls cell = {.west = UNKNOWN, .south = UNKNOWN, .north = UNKNOWN, .east = WALL};
             Vec2 coord = {MAZE_WIDTH - 1, y};
             setWall(coord, cell);
         }
@@ -99,28 +99,28 @@ public:
 
         if(cell_offset == LO)
         {
-            SET_WALL(map[cell_id].lodown, cell_walls.down);
-            SET_WALL(map[cell_id].loright, cell_walls.right);
-            SET_WALL(map[cell_id].hiright, cell_walls.left);
+            SET_WALL(map[cell_id].lodown, cell_walls.south);
+            SET_WALL(map[cell_id].loright, cell_walls.east);
+            SET_WALL(map[cell_id].hiright, cell_walls.west);
 
             if(cell_id >= MAZE_WIDTH / 2)
             {
-                SET_WALL(map[cell_id - MAZE_WIDTH / 2].lodown, cell_walls.up);
+                SET_WALL(map[cell_id - MAZE_WIDTH / 2].lodown, cell_walls.north);
             }
         }
         else
         {
-            SET_WALL(map[cell_id].hidown, cell_walls.down);
-            SET_WALL(map[cell_id].hiright, cell_walls.right);
+            SET_WALL(map[cell_id].hidown, cell_walls.south);
+            SET_WALL(map[cell_id].hiright, cell_walls.east);
 
             if(cell_id % (MAZE_WIDTH / 2) != 0)
             {
-                SET_WALL(map[cell_id - 1].loright, cell_walls.left);
+                SET_WALL(map[cell_id - 1].loright, cell_walls.west);
             }
 
             if(cell_id >= MAZE_WIDTH / 2)
             {
-                SET_WALL(map[cell_id - MAZE_WIDTH / 2].hidown, cell_walls.up);
+                SET_WALL(map[cell_id - MAZE_WIDTH / 2].hidown, cell_walls.north);
             }
         }
     }
@@ -180,10 +180,10 @@ public:
 
         CellWalls cell =
         {
-            .left  = getLeftWall(cell_id, cell_offset),
-            .down  = getDownWall(cell_id, cell_offset),
-            .up    = getUpWall(cell_id, cell_offset),
-            .right = getRightWall(cell_id, cell_offset)
+            .west  = getLeftWall(cell_id, cell_offset),
+            .south  = getDownWall(cell_id, cell_offset),
+            .north    = getUpWall(cell_id, cell_offset),
+            .east = getRightWall(cell_id, cell_offset)
         };
 
         return cell;

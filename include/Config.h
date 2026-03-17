@@ -35,6 +35,9 @@
 #define MF_LEFT_TRESHOLD 36 //14 25
 #define MF_RIGHT_TRESHOLD 30 //20 50
 
+#define MF_FLEFT_TRESHOLD 19
+#define MF_FRIGHT_TRESHOLD 15
+
 //Maze
 #define MAZE_WIDTH 6
 #define MAZE_HEIGHT 4
@@ -43,6 +46,9 @@
 #define MAX_SOLVE_TIME 500
 
 //Navigator
+
+#define GOAL_X 2
+#define GOAL_Y 2
 #define NAV_X_START 1
 #define NAV_Y_START 1
 #define NAV_SIGMA_START 0 //Стартуем вправо

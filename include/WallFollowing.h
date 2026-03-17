@@ -1,6 +1,8 @@
 #pragma once
 #include "Arduino.h"
 #include "ASMR.h"
+#include "Tipes.h"
+#include "Config.h"
 
 float wf_kp_left = 0.08;
 float wf_kp_right = -wf_kp_left;

@@ -53,7 +53,8 @@ SCREEN(dist_sens,
         Serial.print(F("  FrontLeft: "));
         Serial.print(gFSensorLeft);
         Serial.print(F("  FrontRight: "));
-        Serial.println(gFSensorRight);
+        Serial.print(gFSensorRight);
+        Serial.println("      ");
        })
 
 SCREEN(servos, 
