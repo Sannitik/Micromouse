@@ -81,6 +81,11 @@ void solver_init()
 
 void solver_set_start_goal(Vec2 start, Vec2 goal)
 {
+    if (start.x == goal.x && start.y == goal.y)
+    {
+        return;
+    }
+
     solver_start = start;
     solver_goal = goal;
 

@@ -141,7 +141,7 @@ void router_path_to_cyc(char path[])
             router_add_cyc(SS90SEL);
         else if(path[i] == 'I' || path[i] =='S')
         {
-            //router_add_cyc(SWD05);
+            // router_add_cyc(SWD05);
             router_add_cyc(STOP);
             return;
         }

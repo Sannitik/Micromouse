@@ -32,6 +32,8 @@
 ASMR_Entry asmr_prog_buffer[ASMR_PROG_BUFFER] = {
     SWD05,
     SWD05,
+    // SWD05,
+    // SWD05,
     // TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_RIGHT,
     // TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_RIGHT,
     // TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_LEFT,
@@ -148,7 +150,7 @@ void asmr_cyc_turn(CyclogramOutput *output, SensorData data, ASMR_Entry cyc)
             return;
         }
 
-        first_dist = CELL_WIDTH / 2 - turn_radius - 0.01;
+        first_dist = CELL_WIDTH / 2 - turn_radius;
         turn_dist = M_PI_2 * turn_radius;
         second_dist = first_dist;
 

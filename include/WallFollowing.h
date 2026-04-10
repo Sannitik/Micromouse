@@ -32,8 +32,8 @@ float wf_straight_tick(SensorData data)
         counter++;
     }
 
-    theta_i0 += theta_i0_angle;
-    counter++;
+    theta_i0 += 5*theta_i0_angle;
+    counter+=5;
     
     if(counter != 0){
         theta_i0 /= counter;

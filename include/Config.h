@@ -9,7 +9,7 @@
 #define SERVO_KI 20.0
 
 #define ROBOT_WIDTH 0.075
-#define ROBOT_WHEEL_RADIUS 0.0165
+#define ROBOT_WHEEL_RADIUS (0.0165*56.0/54.0)
 
 #define MAX_VEL 0.2
 #define MAX_ANG_VEL 1.0
@@ -47,8 +47,8 @@
 
 //Navigator
 
-#define GOAL_X 2
-#define GOAL_Y 2
+#define GOAL_X 0
+#define GOAL_Y 1
 #define NAV_X_START 1
 #define NAV_Y_START 1
 #define NAV_SIGMA_START 0 //Стартуем вправо
