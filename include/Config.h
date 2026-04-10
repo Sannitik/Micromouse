@@ -40,7 +40,7 @@
 
 //Maze
 #define MAZE_WIDTH 6
-#define MAZE_HEIGHT 4
+#define MAZE_HEIGHT 6
 
 //Solve
 #define MAX_SOLVE_TIME 500

@@ -42,7 +42,7 @@ void nav_tick(int dx, int dy, int dsigma)
     nav_pos.x += x_g;
     nav_pos.y += y_g;
     nav_pos.sigma += dsigma;
-    nav_pos.sigma;
+    nav_pos.sigma &= 0b111;
 }
 Vec2 nav_get_pos()
 {

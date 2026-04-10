@@ -31,8 +31,10 @@
 
 ASMR_Entry asmr_prog_buffer[ASMR_PROG_BUFFER] = {
     SWD05,
-    SWD1,
-    //TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_RIGHT,
+    SWD05,
+    // TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_RIGHT,
+    // TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_RIGHT,
+    // TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_LEFT,
     IDLE,
     STOP
 };
@@ -146,7 +148,7 @@ void asmr_cyc_turn(CyclogramOutput *output, SensorData data, ASMR_Entry cyc)
             return;
         }
 
-        first_dist = CELL_WIDTH / 2 - turn_radius;
+        first_dist = CELL_WIDTH / 2 - turn_radius - 0.01;
         turn_dist = M_PI_2 * turn_radius;
         second_dist = first_dist;
 
@@ -185,7 +187,7 @@ void asmr_cyc_turn(CyclogramOutput *output, SensorData data, ASMR_Entry cyc)
     output->is_completed  = data.odom_S > first_dist + turn_dist + second_dist;
 }
 
-asmr_nav_update(ASMR_Entry cyc)
+void asmr_nav_update(ASMR_Entry cyc)
 {
     uint8_t cyc_type = cyc.raw >> 6;
 
@@ -256,7 +258,7 @@ asmr_nav_update(ASMR_Entry cyc)
                 dy = -dy;
             }
 
-            nav_tick(0, 0, dsigma);
+            nav_tick(dx, dy, dsigma);
             break;
         }
         default:
@@ -308,6 +310,7 @@ void asmr_tick()
 
     if(output.is_completed)
     {
+        Serial.println(current_cyc.raw, BIN);
         asmr_prog_counter++;
         odom_reset();
         asmr_nav_update(current_cyc);
@@ -323,6 +326,12 @@ void asmr_tick()
         router_init();
         router_tick();
         router_path_to_cyc(router_path_buffer);
+        Serial.println(router_path_buffer);
+        Serial.println(nav_get_x());
+        Serial.println(nav_get_y());
+        Serial.println(nav_get_sigma());
+        draw_maze_with_solver(MAZE_WIDTH, MAZE_HEIGHT);
+
 
         asmr_prog_buffer[0] = router_cyc_buffer[0];
         asmr_prog_counter = 0;

@@ -6,7 +6,7 @@
 #include "Navigator.h"
 #include "Tipes.h"
 
-#define ROUTER_PATH_BUFFER_SIZE 256
+#define ROUTER_PATH_BUFFER_SIZE 128
 
 char router_path_buffer[ROUTER_PATH_BUFFER_SIZE];
 size_t router_path_index = 0;
@@ -130,7 +130,7 @@ router_add_cyc(int cyc)
 
 void router_path_to_cyc(char path[])
 {
-    router_add_cyc(SWD05);
+    //router_add_cyc(SWD05);
     for(size_t i = 0; i < ROUTER_PATH_BUFFER_SIZE; i++)
     {
         if(path[i] == 'F')
@@ -141,7 +141,7 @@ void router_path_to_cyc(char path[])
             router_add_cyc(SS90SEL);
         else if(path[i] == 'I' || path[i] =='S')
         {
-            router_add_cyc(SWD05);
+            //router_add_cyc(SWD05);
             router_add_cyc(STOP);
             return;
         }
