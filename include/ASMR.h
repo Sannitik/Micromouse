@@ -14,27 +14,10 @@
 #include "Router.h"
 
 
-#define FROM_STRAIGHT 0
-#define FROM_DIAG 0b00001000
-
-#define SHORTEST 0
-#define EXPLORE 0b00010000
-#define IN_PLACE 0b00100000
-
-#define T45 0
-#define T90 0b00000010
-#define T135 0b00000100
-#define T180 0b00000110
-
-#define TURN_LEFT 0b00000000
-#define TURN_RIGHT 0b00000001
-
 ASMR_Entry asmr_prog_buffer[ASMR_PROG_BUFFER] = {
     SWD05,
     SWD05,
     //TURN_CYC + IN_PLACE + FROM_STRAIGHT + T180 + TURN_RIGHT,
-    // TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_RIGHT,
-    // TURN_CYC + EXPLORE + FROM_STRAIGHT + T90 + TURN_LEFT,
     IDLE,
     STOP
 };
@@ -92,6 +75,44 @@ void asmr_cyc_forw(CyclogramOutput *output, SensorData data, ASMR_Entry cyc)
 
     output->is_completed = data.odom_S > dist;
 }
+
+void asmr_cyc_back(CyclogramOutput *output, SensorData data, ASMR_Entry cyc)
+{
+    output->v_0 = MAX_VEL;
+    output->theta_i0 = wf_straight_tick(data);
+
+    int16_t dist_half_int = cyc.raw & 0b00011111;
+
+    float dist_mul = 1.0;
+
+    output->theta_i0 = wf_straight_tick(data);
+
+    float dist = dist_half_int*0.5*CELL_WIDTH*dist_mul;
+
+    output->is_completed = data.odom_S > dist;
+}
+
+/*
+1.0.x.x.x.x.x.x
+    ^^^ ^ ^^^ |- Направление поворота
+     |  |  |  |- 0: LEFT
+     |  |  |  `- 1: RIGHT
+     |  |  |
+     |  |  |- Угол поворота
+     |  |  |- 00: 45deg
+     |  |  |- 01: 90deg
+     |  |  |- 10: 135deg
+     |  |  `- 11: 180deg
+     |  |
+     |  |- Откуда приходим в поворот (из прямой или диагонали)
+     |  |- 0: STRAIGHT
+     |  `- 1: DIAG
+     |
+     |- Вид поворота 90
+     |- 00: Shortest
+     |- 01: Explore
+     `- 10: In-place
+*/
 
 const float turn_smooth_distances[][2] = {
     [0] = {CELL_WIDTH /2 - TURN_RADIUS_SHORTEST * tan(M_PI /8), CELL_WIDTH * M_SQRT1_2 - TURN_RADIUS_SHORTEST*tan(M_PI /8)}, // 45deg
@@ -332,8 +353,17 @@ void asmr_tick()
         draw_maze_with_solver(MAZE_WIDTH, MAZE_HEIGHT);
 
 
-        asmr_prog_buffer[0] = router_cyc_buffer[0];
+        for(size_t i = 0; i < router_cyc_index; i++)
+        {
+            asmr_prog_buffer[i] = router_cyc_buffer[i];
+            if()
+            {
+                solver_init();
+                solver_set_start_goal();
+            }
+        }
         asmr_prog_counter = 0;
+
 
         solver_init();
     }

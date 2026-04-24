@@ -1,8 +1,6 @@
 #pragma once
 #include <Arduino.h>
-/**
- * Hardware pin defines
- */
+
 #define BOARD UKMARSBOT_V1
 const int ENCODER_LEFT_CLK = 2;
 const int ENCODER_RIGHT_CLK = 3;
@@ -22,11 +20,6 @@ const int SENSOR_4 = A4;
 const int SENSOR_5 = A5;
 const int FUNCTION_PIN = A6;
 const int BATTERY_VOLTS = A7;
-/****/
-
-/***
- * Global variables
- */
 
 uint32_t updateTime;
 uint32_t updateInterval = 40; // (ms) do not make this smaller than 25ms for performance reasons
